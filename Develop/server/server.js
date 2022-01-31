@@ -3,7 +3,7 @@ const path = require('path');
 const db = require('./config/connection');
 const routes = require('./routes');
 // need to create type def and resolvers
-const { typeDefs ,resolvers}= require ()
+const { typeDefs ,resolvers}= require ('/schemas')
 const { ApollorServer}= require('apollo-server-express')
 
 const app = express();
