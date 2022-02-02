@@ -1,6 +1,6 @@
 const {Book, User}= require('../models')
 const {AuthenticationError}=require("apollo-server-express")
-const {AuthService} =require('../utils/auth')
+const {signToken} =require('../utils/auth')
 
 const resolver={
   // query to read data
@@ -27,7 +27,7 @@ const resolver={
         },
         addUser: async(parent,{username,email,password})=>{
             const user=await User.create({username,email,password})
-            const token= AuthService(user)
+            const token= signToken(user)
         },
         login:async(parent,{email,password})=>{
             const user=await User.findOne({email})
@@ -39,7 +39,7 @@ const resolver={
             if(!correctPw){
                 throw new AuthenticationError("incorrect password")
             }
-            const token= AuthService(user)
+            const token= signToken(user)
             return{ token,user}
         },
 
