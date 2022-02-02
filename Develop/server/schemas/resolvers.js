@@ -1,6 +1,9 @@
-const {Book}= require('../models')
+const {Book, User}= require('../models')
+const {AuthenticationError}=require("apollo-server-express")
+const {}
 
 const resolver={
+  // query to read data
     Query:{
         books: async()=>{
             return Book.find()
@@ -10,7 +13,8 @@ const resolver={
         }
 
     },
-    // add mutation. 'Create,findOneandupdate,findOneandelete"""
+    // add Mutation to  'Create,findOneandupdate,findOneandelete"""
+    
     Mutation:{
         addBook: async(parent,{name})=>{
             return Book.create({name})
