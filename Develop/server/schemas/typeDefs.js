@@ -12,6 +12,7 @@ type User{
 }
  type Book{
     _id=ID
+    
     Author=[]
     description=String
     title=String
@@ -33,7 +34,7 @@ type Auth {
      login(email:String!, password: String!): Auth
      addBook(Author: [],description:String!): User
      
-     removebook(_id: ID!):User
+     removebook(bookid: ID!,bookcounts:Int,savedBooks=[]):User
     addbook(name:String!): Book
     
 }`
