@@ -10,13 +10,13 @@ type User{
     BookCount= Number
     savedBooks= [book]
 }
- Book{
-    bookid=ID
+ type Book{
+    _id=ID
     Author=[]
     description=String
     title=String
-    image=[Image!]
-    link=[Link!]
+    image=String
+    link= String
 
 type Auth {
     token: ID!
@@ -32,7 +32,8 @@ type Auth {
      addUser(username :String!, email: String!, password: String!):Auth
      login(email:String!, password: String!): Auth
      addBook(Author: [],description:String!): User
-     removebook(bookid: ID!):User
+     
+     removebook(_id: ID!):User
     addbook(name:String!): Book
     
 }`
