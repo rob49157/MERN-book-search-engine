@@ -4,13 +4,13 @@ const db = require('./config/connection');
 const routes = require('./routes');
 // need to create type def and resolvers
 const { typeDefs ,resolvers}= require ('/schemas')
-const { ApollorServer}= require('apollo-server-express')
+const { ApolloServer}= require('apollo-server-express')
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // apollo server
-const server= new ApollorServer({
+const server= new ApolloServer({
   typeDefs,
   resolvers
 })

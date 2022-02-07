@@ -6,7 +6,7 @@ const resolver={
   // query to read data
     Query:{
         books: async()=>{
-            return Book.find()
+            return Book.find().p
         },
         book: async(parent,{bookid})=>{
             return Book.findOne({_id:bookid})
@@ -19,12 +19,7 @@ const resolver={
         addBook: async(parent,{Author,description})=>{
             return Book.create({Author,description})
         },
-        removebook: async(parent,{bookid})=>{
-            return Book.findOneAndUpdate(
-                {_id:bookid},
-                {$pull:{bookid}}
-            )
-        },
+      
         addUser: async(parent,{username,email,password})=>{
             const user=await User.create({username,email,password})
             const token= signToken(user)
@@ -44,6 +39,24 @@ const resolver={
             const token= signToken(user)
             return{ token,user}
         },
+        removebook: async(parent,{bookid})=>{
+            return await User.findOneAndUpdate(
+                {_id:bookid},
+                {$pull:{bookid}}
+            )
+        },
+
+        saveBook: async(parent,{bookdata},context)=>{
+            if(contex.user){
+                return await User.findOneAndUpdate(
+                    {_id:context.user._id},
+                    {$push:{savedBook:bookid}}
+                )
+            }
+        }
+
+            
+            
 
 
     }
