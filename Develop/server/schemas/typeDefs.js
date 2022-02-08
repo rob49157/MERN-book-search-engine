@@ -36,6 +36,15 @@ type Auth {
     user: User
 }
 
+input BookInput{
+    bookId: String
+    authors: [String]
+    description: String
+    title: String
+    image: String
+    link: String
+}
+
 
  
  type Query{
@@ -46,9 +55,9 @@ type Auth {
      addUser(username :String!, email: String!, password: String!):Auth
      login(email:String!, password: String!): Auth
      addBook(Author: [],description:String!): User
-     saveBook(bookdata:bookInput):User
+     saveBook(bookData: BookInput! ): User
      removebook(bookid: ID!):User
-    addbook(name:String!): Book
+    
     
 }`
 

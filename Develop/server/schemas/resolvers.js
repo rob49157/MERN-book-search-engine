@@ -5,59 +5,63 @@ const {signToken} =require('../utils/auth')
 const resolver={
   // query to read data
     Query:{
-        books: async()=>{
-            return Book.find().p
-        },
-        book: async(parent,{bookid})=>{
-            return Book.findOne({_id:bookid})
-        }
+      
+        me: async (parent, args, context) => {
+            if (context.user){
+              return await User.findOne({ _id: context.user.id}).select('-__v -password');  
+            }
+             return new AuthenticationError('error logging in') 
+          
+      }
+        
 
     },
     // add Mutation to  'Create,findOneandupdate,findOneandelete"""
     
     Mutation:{
-        addBook: async(parent,{Author,description})=>{
-            return Book.create({Author,description})
-        },
+        addUser: async (parent, { username, email, password }) => {
+            const profile = await User.create({ username, email, password });
+            const token = signToken(profile);
       
-        addUser: async(parent,{username,email,password})=>{
-            const user=await User.create({username,email,password})
-            const token= signToken(user)
-            
-            return {user, token}
-        },
-        login:async(parent,{email,password})=>{
-            const user=await User.findOne({email})
-            if(!user){
-                throw new AuthenticationError("No user found")
+            return { token, profile };
+          },
+          login: async (parent, { email, password }) => {
+            const profile = await User.findOne({ email });
+      
+            if (!profile) {
+              throw new AuthenticationError('No profile with this email found!');
             }
-
-            const correctPw= await user.isCorrectPassword(password)
-            if(!correctPw){
-                throw new AuthenticationError("incorrect password")
+      
+            const correctPw = await profile.isCorrectPassword(password);
+      
+            if (!correctPw) {
+              throw new AuthenticationError('Incorrect password!');
             }
-            const token= signToken(user)
-            return{ token,user}
-        },
-        removebook: async(parent,{bookid})=>{
-            return await User.findOneAndUpdate(
-                {_id:bookid},
-                {$pull:{bookid}}
-            )
-        },
-
-        saveBook: async(parent,{bookdata},context)=>{
-            if(contex.user){
-                return await User.findOneAndUpdate(
-                    {_id:context.user._id},
-                    {$push:{savedBook:bookid}}
-                )
+      
+            const token = signToken(profile);
+            return { token, profile };
+          },
+          saveBook: async(parent,{bookData}, context)=>{
+              if(context.profile){
+                  return await User.findByIdAndUpdate(
+                      {_id:context.profile._id},
+                      {$push:{savedBook: bookData}}
+                  )
+              }
+              throw new AuthenticationError('You need to be logged in!');
+            },
+            removebook: async(parent,{bookid},context)=>{
+                if(context.profile){
+                    return await User.findOneAndUpdate(
+                        { _id: context.user._id },
+                        { $pull: { savedBooks: bookId } }
+                    )
+                }
+                throw new AuthenticationError('You need to be logged in!');
             }
-        }
-
+              
+              
             
-            
-
 
     }
 }
