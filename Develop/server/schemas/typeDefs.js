@@ -1,65 +1,57 @@
-const { gql }=require('apollo-server-express')
+const { gql } = require('apollo-server-express');
 
-const typeDefs= gql`
-
-
-type User{
-    _id:ID
-    username:String
+const typeDefs = gql`
+  type User {
+    _id: ID
+    username: String
     email: String
-    BookCount: Number
-    savedBooks: [Book]
-}
- type Book{
-    bookid:ID
-    
-    Authors:[String]
-    description:String
-    title:String
-    image:String
-    link:String
- }
+    profile: Profile!
+    savedBooks: [Book]!
+  }
 
- input bookInput{
+  type Book {
     bookId: String
-    authors: [String]
+    authors: [String]!
     description: String
     title: String
     image: String
     link: String
-}
+  }
 
+  input BookInput {
+    bookId: String
+    authors: [String]!
+    description: String
+    title: String
+    image: String
+    link: String
+  }
 
+  type Profile {
+    mainInterest: String
+  }
 
-type Auth {
+  input ProfileInput {
+    mainInterest: String
+  }
+
+  type Auth {
     token: ID!
     user: User
-}
+  }
 
-input BookInput{
-    bookId: String
-    authors: [String]
-    description: String
-    title: String
-    image: String
-    link: String
-}
+  type Query {
+    users: User
+    me: User
+  }
 
+  type Mutation {
+    addUser(username: String!, email: String!, password: String!): Auth
+    loginUser(email: String!, password: String!): Auth
+    saveBook(bookData: BookInput!): User
+    saveProfile(profileData: ProfileInput!): User
+    removeBook(bookId: ID!): User
+  }
+`;
 
- 
- type Query{
-    me:[User]
-}
-
- type Mutation{
-     addUser(username :String!, email: String!, password: String!):Auth
-     login(email:String!, password: String!): Auth
-     addBook(Author: [],description:String!): User
-     saveBook(bookData: BookInput! ): User
-     removebook(bookid: ID!):User
-    
-    
-}`
-
-
-module.exports= typeDefs
+module.exports = typeDefs;

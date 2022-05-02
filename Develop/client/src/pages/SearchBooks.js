@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useMutation } from '@apollo/client';
 import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'react-bootstrap';
-
+import { SAVE_BOOK } from '../utils/mutations';
+import { SAVE_PROFILE } from '../utils/mutations';
 import Auth from '../utils/auth';
-import { saveBook, searchGoogleBooks } from '../utils/API';
+// import { saveBook, searchGoogleBooks } from '../utils/API';
+import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
 const SearchBooks = () => {
@@ -13,6 +16,8 @@ const SearchBooks = () => {
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
+  const [saveBook] = useMutation(SAVE_BOOK);
+  const [saveProfile] = useMutation(SAVE_PROFILE);
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
@@ -36,7 +41,6 @@ const SearchBooks = () => {
       }
 
       const { items } = await response.json();
-
       const bookData = items.map((book) => ({
         bookId: book.id,
         authors: book.volumeInfo.authors || ['No author to display'],
@@ -64,12 +68,18 @@ const SearchBooks = () => {
       return false;
     }
 
-    try {
-      const response = await saveBook(bookToSave, token);
+    // console.log("bookData: ",bookData);
+    console.log("bookToSave: ",bookToSave);
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+    try {
+      // const {result} = await saveBook({
+      //   variables: { bookData: { ...bookToSave } },
+      // });
+      const profileToSave = { mainInterest: "new profile"};
+      const {result} = await saveProfile({
+        // variables: { profileData: { ...profileToSave } },
+        variables: { profileData: profileToSave },
+      });
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
